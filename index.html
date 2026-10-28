@@ -1,304 +1,267 @@
-
 <!DOCTYPE html>
 <html lang="ru">
 
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>DUALITY — Neon Sound Lab</title>
 
-    <title>DUALITY — Two Sides of Sound</title>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
 
-    <link rel="stylesheet" href="style.css">
+    <link
+        href="https://fonts.googleapis.com/css2?family=DM+Mono:wght@400;500&family=Manrope:wght@400;500;600;700;800&display=swap"
+        rel="stylesheet">
+
+    <link rel="stylesheet" href="style.css" />
+    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
 </head>
 
 <body>
-    <div class="app">
+    <div class="ambient ambient-one"></div>
+    <div class="ambient ambient-two"></div>
 
+    <main class="app-shell">
+
+        <!-- HEADER -->
         <header class="topbar">
-            <a class="logo" href="#">DUALITY<span>.</span></a>
+            <div class="brand-wrap">
+                <div class="brand-mark" aria-hidden="true">
+                    <span></span>
+                    <span></span>
+                </div>
 
-            <div class="topbar-caption">
-                TWO SIDES OF SOUND
+                <div>
+                    <div class="brand">DUALITY<span>✳</span></div>
+                    <div class="brand-sub">TWO SIDES OF SOUND</div>
+                </div>
             </div>
 
-            <div class="live-indicator">
-                <span class="live-dot"></span>
-                INTERACTIVE SOUND LAB
+            <div class="transport-head">
+                <div class="live-indicator">
+                    <span class="live-dot"></span>
+                    <span id="statusText">CHOOSE SOUNDS TO BEGIN</span>
+                </div>
+
+                <button id="startBtn" class="primary-button">
+                    <span class="button-icon">▶</span>
+                    <span id="startLabel">START AUDIO</span>
+                </button>
+
+                <button id="stopBtn" class="icon-button" aria-label="Остановить" title="Stop">
+                    ■
+                </button>
             </div>
         </header>
 
-        <main>
-            <section class="hero">
-                <div class="eyebrow">CREATE YOUR OWN ATMOSPHERE</div>
+        <!-- MAIN WORKSPACE -->
+        <section class="workbench">
 
-                <h1>
-                    TWO SIDES.<br>
-                    <span>ONE SOUND.</span>
-                </h1>
-
-                
-            </section>
-
-            <section class="transport panel">
-                <div class="transport-left">
-                    <button id="playAll" class="play-button" type="button">
-                        <span id="playIcon">▶</span>
-                        <span id="playText">PLAY</span>
-                    </button>
-
-                    <button id="stopAll" class="stop-button" type="button">
-                        STOP
-                    </button>
-                </div>
-
-                <div class="tempo-control">
-                    <label for="tempo">TEMPO</label>
-                    <input id="tempo" type="range" min="60" max="160" value="100">
-                    <span id="tempoValue">100 BPM</span>
-                </div>
-
-                <div class="transport-status">
-                    <span class="status-dot"></span>
-                    <span id="statusText">READY TO PLAY</span>
-                </div>
-            </section>
-
-            <section class="sound-section">
-                <div class="section-heading">
+            <!-- SOUND LIBRARY -->
+            <section class="panel library-panel">
+                <div class="panel-heading">
                     <div>
-                        <div class="section-number">01 / LIGHT</div>
-                        <h2>Светлая сторона</h2>
-                        <p>Хрупкие ноты, звонкие мелодии и искры.</p>
-                    </div>
-                    <span class="side-symbol light-symbol">✳</span>
-                </div>
-
-                <div class="sound-grid">
-                    <button class="sound-pad light-pad" data-sound="xylophone" type="button">
-                        <span class="pad-index">01</span>
-                        <span class="pad-icon">✳</span>
-                        <span class="pad-name">XYLOPHONE</span>
-                        <span class="pad-description">Деревянные ноты</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad light-pad" data-sound="bells" type="button">
-                        <span class="pad-index">02</span>
-                        <span class="pad-icon">♢</span>
-                        <span class="pad-name">BELLS</span>
-                        <span class="pad-description">Хрустальные звуки</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad light-pad" data-sound="kalimba" type="button">
-                        <span class="pad-index">03</span>
-                        <span class="pad-icon">⌁</span>
-                        <span class="pad-name">KALIMBA</span>
-                        <span class="pad-description">Тёплые переливы</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad light-pad" data-sound="musicbox" type="button">
-                        <span class="pad-index">04</span>
-                        <span class="pad-icon">♫</span>
-                        <span class="pad-name">MUSIC BOX</span>
-                        <span class="pad-description">Музыкальная шкатулка</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad light-pad" data-sound="celesta" type="button">
-                        <span class="pad-index">05</span>
-                        <span class="pad-icon">✧</span>
-                        <span class="pad-name">CELESTA</span>
-                        <span class="pad-description">Воздушная мелодия</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad light-pad" data-sound="sparkles" type="button">
-                        <span class="pad-index">06</span>
-                        <span class="pad-icon">⁕</span>
-                        <span class="pad-name">SPARKLES</span>
-                        <span class="pad-description">Мелкие звуковые искры</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-                </div>
-            </section>
-
-            <section class="sound-section">
-                <div class="section-heading">
-                    <div>
-                        <div class="section-number shadow-label">02 / SHADOW</div>
-                        <h2>Тёмная сторона</h2>
-                        <p>Глубокий бас, ритм и шероховатые текстуры.</p>
-                    </div>
-                    <span class="side-symbol shadow-symbol">◒</span>
-                </div>
-
-                <div class="sound-grid">
-                    <button class="sound-pad shadow-pad" data-sound="bass" type="button">
-                        <span class="pad-index">07</span>
-                        <span class="pad-icon">◉</span>
-                        <span class="pad-name">DEEP BASS</span>
-                        <span class="pad-description">Низкая пульсация</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad shadow-pad" data-sound="maracas" type="button">
-                        <span class="pad-index">08</span>
-                        <span class="pad-icon">⁘</span>
-                        <span class="pad-name">MARACAS</span>
-                        <span class="pad-description">Шуршащий ритм</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad shadow-pad" data-sound="drums" type="button">
-                        <span class="pad-index">09</span>
-                        <span class="pad-icon">⊙</span>
-                        <span class="pad-name">DRUMS</span>
-                        <span class="pad-description">Ударный пульс</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad shadow-pad" data-sound="darkpulse" type="button">
-                        <span class="pad-index">10</span>
-                        <span class="pad-icon">∿</span>
-                        <span class="pad-name">DARK PULSE</span>
-                        <span class="pad-description">Тёмный синтезатор</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad shadow-pad" data-sound="toms" type="button">
-                        <span class="pad-index">11</span>
-                        <span class="pad-icon">◌</span>
-                        <span class="pad-name">TOMS</span>
-                        <span class="pad-description">Низкие барабаны</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad shadow-pad" data-sound="industrial" type="button">
-                        <span class="pad-index">12</span>
-                        <span class="pad-icon">⌘</span>
-                        <span class="pad-name">INDUSTRIAL</span>
-                        <span class="pad-description">Механический оттенок</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-                </div>
-            </section>
-
-            <section class="sound-section">
-                <div class="section-heading">
-                    <div>
-                        <div class="section-number texture-label">03 / TEXTURE</div>
-                        <h2>Пространство</h2>
-                        <p>Фоновые слои, которые объединяют звучание.</p>
-                    </div>
-                    <span class="side-symbol texture-symbol">〰</span>
-                </div>
-
-                <div class="sound-grid">
-                    <button class="sound-pad texture-pad" data-sound="ambient" type="button">
-                        <span class="pad-index">13</span>
-                        <span class="pad-icon">☁</span>
-                        <span class="pad-name">AMBIENT</span>
-                        <span class="pad-description">Мягкий звуковой фон</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad texture-pad" data-sound="wind" type="button">
-                        <span class="pad-index">14</span>
-                        <span class="pad-icon">≋</span>
-                        <span class="pad-name">WIND</span>
-                        <span class="pad-description">Движение воздуха</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad texture-pad" data-sound="rain" type="button">
-                        <span class="pad-index">15</span>
-                        <span class="pad-icon">⋰</span>
-                        <span class="pad-name">RAIN</span>
-                        <span class="pad-description">Дождливая текстура</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad texture-pad" data-sound="echo" type="button">
-                        <span class="pad-index">16</span>
-                        <span class="pad-icon">◎</span>
-                        <span class="pad-name">ECHO</span>
-                        <span class="pad-description">Повторяющиеся ноты</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad texture-pad" data-sound="pad" type="button">
-                        <span class="pad-index">17</span>
-                        <span class="pad-icon">▱</span>
-                        <span class="pad-name">SOFT PAD</span>
-                        <span class="pad-description">Протяжный аккорд</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-
-                    <button class="sound-pad texture-pad" data-sound="chimes" type="button">
-                        <span class="pad-index">18</span>
-                        <span class="pad-icon">⋆</span>
-                        <span class="pad-name">CHIMES</span>
-                        <span class="pad-description">Звонкие обертоны</span>
-                        <span class="pad-state">TAP TO ACTIVATE</span>
-                    </button>
-                </div>
-            </section>
-
-            <section class="settings panel">
-                <div class="settings-heading">
-                    <div class="section-number">04 / SOUND DESIGN</div>
-                    <h2>Настрой звучание</h2>
-                    <p>Меняй характер музыки прямо во время воспроизведения.</p>
-                </div>
-
-                <div class="settings-grid">
-                    <div class="setting">
-                        <div class="setting-label">
-                            <label for="volume">MASTER VOLUME</label>
-                            <span id="volumeValue">70%</span>
+                        <div class="eyebrow">
+                            SOUND LIBRARY <span class="tiny-dot"></span>
                         </div>
-                        <input id="volume" type="range" min="0" max="100" value="70">
+
+                        <h1>Choose your <em>layer</em></h1>
                     </div>
 
-                    <div class="setting">
-                        <div class="setting-label">
+                    <div class="layer-count">
+                        <strong>18</strong>
+                        <span>LAYERS</span>
+                    </div>
+                </div>
+
+                <div id="soundGrid" class="sound-grid" aria-label="Инструменты"></div>
+
+                <div class="library-foot">
+                    <span class="color-key"></span>
+                    CLICK TO PREVIEW + ADD TO MIX
+                    <span class="foot-right">MUTE TO REMOVE LAYER</span>
+                </div>
+            </section>
+
+            <!-- SOUND SETTINGS -->
+            <section class="panel settings-panel">
+
+                <div class="settings-head">
+                    <div class="selected-identity">
+                        <div id="selectedGlyph" class="selected-glyph">✳</div>
+
+                        <div>
+                            <div class="eyebrow">NOW EDITING</div>
+                            <h2 id="selectedName">XYLOPHONE</h2>
+                        </div>
+                    </div>
+
+                    <span id="activeBadge" class="active-badge">ACTIVE</span>
+                </div>
+
+                <div class="setting-list">
+
+                    <!-- VOLUME -->
+                    <div class="setting-row" data-param="volume">
+                        <div class="setting-meta">
+                            <label for="volume">VOLUME</label>
+                            <output id="volumeValue">72%</output>
+                        </div>
+
+                        <input id="volume" type="range" min="0" max="100" step="1" value="72" />
+                    </div>
+
+                    <!-- PITCH -->
+                    <div class="setting-row" data-param="pitch">
+                        <div class="setting-meta">
                             <label for="pitch">PITCH</label>
-                            <span id="pitchValue">0</span>
+                            <output id="pitchValue">+0 ST</output>
                         </div>
-                        <input id="pitch" type="range" min="-12" max="12" value="0">
+
+                        <input id="pitch" type="range" min="-12" max="12" step="1" value="0" />
                     </div>
 
-                    <div class="setting">
-                        <div class="setting-label">
+                    <!-- TONE -->
+                    <div class="setting-row" data-param="tone">
+                        <div class="setting-meta">
+                            <label for="tone">TONE</label>
+                            <output id="toneValue">72%</output>
+                        </div>
+
+                        <input id="tone" type="range" min="0" max="100" step="1" value="72" />
+                    </div>
+
+                    <!-- REVERB -->
+                    <div class="setting-row" data-param="reverb">
+                        <div class="setting-meta">
                             <label for="reverb">REVERB</label>
-                            <span id="reverbValue">25%</span>
+                            <output id="reverbValue">32%</output>
                         </div>
-                        <input id="reverb" type="range" min="0" max="100" value="25">
+
+                        <input id="reverb" type="range" min="0" max="100" step="1" value="32" />
                     </div>
 
-                    <div class="setting">
-                        <div class="setting-label">
+                    <!-- DELAY -->
+                    <div class="setting-row" data-param="delay">
+                        <div class="setting-meta">
                             <label for="delay">DELAY</label>
-                            <span id="delayValue">15%</span>
+                            <output id="delayValue">18%</output>
                         </div>
-                        <input id="delay" type="range" min="0" max="100" value="15">
+
+                        <input id="delay" type="range" min="0" max="100" step="1" value="18" />
+                    </div>
+
+                    <!-- ATTACK -->
+                    <div class="setting-row" data-param="attack">
+                        <div class="setting-meta">
+                            <label for="attack">ATTACK</label>
+                            <output id="attackValue">0.08 S</output>
+                        </div>
+
+                        <input id="attack" type="range" min="0.01" max="1.5" step="0.01" value="0.08" />
+                    </div>
+
+                    <!-- RELEASE -->
+                    <div class="setting-row" data-param="release">
+                        <div class="setting-meta">
+                            <label for="release">RELEASE</label>
+                            <output id="releaseValue">0.60 S</output>
+                        </div>
+
+                        <input id="release" type="range" min="0.05" max="2.5" step="0.05" value="0.6" />
+                    </div>
+
+                </div>
+
+                <!-- INSTRUMENT ACTIONS -->
+                <div class="layer-actions">
+                    <button id="muteBtn" class="secondary-button">
+                        <span class="action-symbol">◖</span>
+                        MUTE
+                    </button>
+
+                    <button id="soloBtn" class="solo-button">
+                        <span class="action-symbol">◉</span>
+                        SOLO
+                    </button>
+
+                    <button id="resetBtn" class="reset-button" title="Сбросить настройки выбранного инструмента">
+                        ↺
+                    </button>
+                </div>
+
+                <div class="settings-note">
+                    <span class="note-star">✦</span>
+
+                    <span id="settingsHint">
+                        Shape this sound. Every layer has its own controls.
+                    </span>
+                </div>
+
+            </section>
+        </section>
+
+        <!-- GLOBAL CONTROLS -->
+        <footer class="bottom-panel panel">
+
+            <!-- TEMPO -->
+            <div class="global-control tempo-control">
+                <div class="global-label">
+                    <span class="global-icon tempo-icon">↯</span>
+
+                    <div>
+                        <span class="eyebrow">TEMPO</span>
+
+                        <strong>
+                            <output id="tempoValue">120</output>
+                            <small>BPM</small>
+                        </strong>
                     </div>
                 </div>
-            </section>
 
-           
-        </main>
+                <input id="tempo" type="range" min="70" max="160" step="1" value="120" />
+            </div>
 
-        <footer class="footer">
-            <span>DUALITY © 2026</span>
-            <span>FIND YOUR OWN FREQUENCY</span>
+            <!-- STEP SEQUENCE -->
+            <div class="step-track-wrap">
+                <div class="step-head">
+                    <span class="eyebrow">SEQUENCE</span>
+                    <span id="stepCounter">STEP 01 / 16</span>
+                </div>
+
+                <div id="stepTrack" class="step-track"></div>
+            </div>
+
+            <!-- MASTER VOLUME -->
+            <div class="global-control master-control">
+                <div class="global-label">
+                    <span class="global-icon master-icon">◉</span>
+
+                    <div>
+                        <span class="eyebrow">MASTER</span>
+
+                        <strong>
+                            <output id="masterValue">−6</output>
+                            <small>DB</small>
+                        </strong>
+                    </div>
+                </div>
+
+                <input id="master" type="range" min="-24" max="0" step="1" value="-6" />
+            </div>
+
         </footer>
 
-    </div>
+        <!-- FOOTER CAPTION -->
+        <div class="bottom-caption">
+            <span>DUALITY / SOUND LAB</span>
+            <span>BUILD YOUR OWN FREQUENCY <b>✳</b></span>
+            <span>V. 02.6</span>
+        </div>
 
-    <script src="https://unpkg.com/tone@14.7.77/build/Tone.js"></script>
+    </main>
+
+    <!-- JAVASCRIPT -->
     <script src="script.js"></script>
 </body>
 

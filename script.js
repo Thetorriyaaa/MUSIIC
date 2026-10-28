@@ -1,629 +1,1064 @@
 
-document.addEventListener("DOMContentLoaded", () => {
-    const pads = [...document.querySelectorAll(".sound-pad")];
+(() => {
+    'use strict';
 
-    const playButton = document.querySelector("#playAll");
-    const stopButton = document.querySelector("#stopAll");
-    const playIcon = document.querySelector("#playIcon");
-    const playText = document.querySelector("#playText");
+    // ==========================================
+    // DUALITY — NEON SOUND LAB
+    // ==========================================
 
-    const tempoSlider = document.querySelector("#tempo");
-    const tempoValue = document.querySelector("#tempoValue");
-    const volumeSlider = document.querySelector("#volume");
-    const pitchSlider = document.querySelector("#pitch");
-    const reverbSlider = document.querySelector("#reverb");
-    const delaySlider = document.querySelector("#delay");
+    const instruments = [
+        {
+            id: 'xylophone', name: 'Xylophone', glyph: '✳',
+            color: '#FF5D8F', kind: 'synth', type: 'triangle',
+            base: 0.72, attack: 0.03, release: 0.35,
+            pattern: ['C5', null, 'E5', null, 'G5', null, 'E5', null, 'D5', null, 'F5', null, 'A5', null, 'G5', null]
+        },
+        {
+            id: 'bells', name: 'Bells', glyph: '✧',
+            color: '#B99CFF', kind: 'fm',
+            base: 0.45, attack: 0.01, release: 1.25,
+            pattern: ['G5', null, null, 'D5', null, null, 'A5', null, 'G5', null, null, 'D5', null, 'E5', null, null]
+        },
+        {
+            id: 'kalimba', name: 'Kalimba', glyph: '◈',
+            color: '#46D9E7', kind: 'pluck',
+            base: 0.60, attack: 0.01, release: 0.7,
+            pattern: ['C4', null, 'G4', null, null, 'E4', null, 'G4', 'A4', null, 'E4', null, null, 'D4', null, 'G4']
+        },
+        {
+            id: 'musicbox', name: 'Music box', glyph: '♫',
+            color: '#FFD166', kind: 'fm',
+            base: 0.34, attack: 0.01, release: 1.6,
+            pattern: [null, 'E5', null, 'G5', null, 'B5', null, 'G5', null, 'D5', null, 'F5', null, 'A5', null, 'F5']
+        },
+        {
+            id: 'celesta', name: 'Celesta', glyph: '✦',
+            color: '#F17CFF', kind: 'synth', type: 'sine',
+            base: 0.42, attack: 0.01, release: 1.1,
+            pattern: ['E5', null, null, 'G5', null, null, 'B5', null, 'A5', null, null, 'G5', null, null, 'E5', null]
+        },
+        {
+            id: 'sparkles', name: 'Sparkles', glyph: '✺',
+            color: '#D5FF5B', kind: 'fm',
+            base: 0.27, attack: 0.01, release: 0.8,
+            pattern: [null, null, 'C6', null, null, 'G5', null, null, 'E6', null, null, 'B5', null, null, 'D6', null]
+        },
+        {
+            id: 'bass', name: 'Bass', glyph: '◉',
+            color: '#FF9853', kind: 'mono',
+            base: 0.67, attack: 0.02, release: 0.25,
+            pattern: ['C2', null, null, null, 'C2', null, 'G1', null, 'A1', null, null, null, 'F1', null, 'G1', null]
+        },
+        {
+            id: 'maracas', name: 'Maracas', glyph: '⋰',
+            color: '#7E82FF', kind: 'noise',
+            base: 0.24, attack: 0.001, release: 0.07,
+            pattern: [1, null, 1, null, 1, 1, null, 1, 1, null, 1, null, 1, 1, null, 1]
+        },
+        {
+            id: 'drums', name: 'Drums', glyph: '▤',
+            color: '#FF6677', kind: 'membrane',
+            base: 0.70, attack: 0.001, release: 0.22,
+            pattern: ['C2', null, null, null, 'C2', null, null, null, 'C2', null, null, null, 'G1', null, null, null]
+        },
+        {
+            id: 'darkpulse', name: 'Darkpulse', glyph: '◒',
+            color: '#A184FF', kind: 'mono',
+            base: 0.47, attack: 0.03, release: 0.3,
+            pattern: ['C3', null, 'C3', null, null, 'D#3', null, null, 'G2', null, 'G2', null, null, 'A#2', null, null]
+        },
+        {
+            id: 'toms', name: 'Toms', glyph: '◍',
+            color: '#4BE0B5', kind: 'membrane',
+            base: 0.32, attack: 0.002, release: 0.3,
+            pattern: [null, null, 'G2', null, null, null, null, 'A2', null, null, 'C3', null, null, null, 'G2', null]
+        },
+        {
+            id: 'industrial', name: 'Industrial', glyph: '⌁',
+            color: '#9AC1CF', kind: 'noise', noise: 'brown',
+            base: 0.32, attack: 0.001, release: 0.25,
+            pattern: [1, null, null, null, null, null, 1, null, null, null, 1, null, null, null, null, null]
+        },
+        {
+            id: 'ambient', name: 'Ambient', glyph: '◌',
+            color: '#70B4FF', kind: 'poly',
+            base: 0.25, attack: 0.45, release: 1.8,
+            pattern: ['C4', null, null, null, null, null, null, null, 'G4', null, null, null, null, null, null, null]
+        },
+        {
+            id: 'wind', name: 'Wind', glyph: '≈',
+            color: '#70E5BA', kind: 'noise', noise: 'pink',
+            base: 0.15, attack: 0.4, release: 1.5,
+            pattern: [1, null, null, null, null, null, null, null, null, null, 1, null, null, null, null, null]
+        },
+        {
+            id: 'rain', name: 'Rain', glyph: '∿',
+            color: '#5D93FF', kind: 'noise',
+            base: 0.16, attack: 0.015, release: 0.18,
+            pattern: [1, null, 1, 1, null, 1, null, 1, 1, null, 1, null, 1, 1, null, 1]
+        },
+        {
+            id: 'echo', name: 'Echo', glyph: '◎',
+            color: '#FF83BD', kind: 'synth', type: 'sine',
+            base: 0.30, attack: 0.02, release: 0.7,
+            pattern: [null, 'G4', null, null, null, 'D5', null, null, null, 'G4', null, null, null, 'D5', null, null]
+        },
+        {
+            id: 'pad', name: 'Pad', glyph: '▱',
+            color: '#C1A0FF', kind: 'poly',
+            base: 0.35, attack: 0.6, release: 2.1,
+            pattern: ['C4', null, null, null, null, null, null, null, 'A3', null, null, null, null, null, null, null]
+        },
+        {
+            id: 'chimes', name: 'Chimes', glyph: '♢',
+            color: '#F8E66D', kind: 'fm',
+            base: 0.35, attack: 0.005, release: 0.9,
+            pattern: [null, null, null, 'E5', null, null, null, null, null, null, 'G5', null, null, null, null, null]
+        }
+    ];
 
-    const volumeValue = document.querySelector("#volumeValue");
-    const pitchValue = document.querySelector("#pitchValue");
-    const reverbValue = document.querySelector("#reverbValue");
-    const delayValue = document.querySelector("#delayValue");
+    // ==========================================
+    // STATE
+    // ==========================================
 
-    const statusText = document.querySelector("#statusText");
-    const statusContainer = document.querySelector(".transport-status");
-    const selectedSound = document.querySelector("#selectedSound");
+    const defaults = {
+        volume: 72,
+        pitch: 0,
+        tone: 72,
+        reverb: 32,
+        delay: 18,
+        attack: 0.08,
+        release: 0.6,
+        muted: true
+    };
 
-    let audioReady = false;
-    let audioStarting = false;
-    let master;
-    let globalReverb;
-    let globalDelay;
-    let step = 0;
-    let currentPitch = 0;
-
-    const instruments = {};
-    const layerEffects = {};
-    const activeSounds = new Set();
     const settings = {};
+    const voices = {};
 
+    let selected = 'xylophone';
+    let solo = null;
+    let audioReady = false;
+    let reverbReady = false;
+    let isPlaying = false;
+    let step = 0;
+    let transportEvent = null;
+    let masterMuted = false;
 
+    let master = null;
+    let reverb = null;
+    let delay = null;
 
-    const patterns = {
-        xylophone: ["C5", null, "E5", null, "G5", null, "E5", null, "D5", null, "G5", null, "E5", null, "D5", null],
-        bells: ["E5", null, null, null, "G5", null, null, null, "B5", null, null, null, "G5", null, null, null],
-        kalimba: ["C4", null, "G4", null, "E4", null, "G4", null, "A4", null, "G4", null, "E4", null, "D4", null],
-        musicbox: ["G5", null, "E5", null, "D5", null, "C5", null, "E5", null, "G5", null, "A5", null, "G5", null],
-        celesta: [null, null, "C6", null, null, null, "G5", null, null, null, "E6", null, null, null, "D6", null],
-        sparkles: [null, "E6", null, null, null, null, "G6", null, "C6", null, null, null, null, "A5", null, null],
-        bass: ["C2", null, null, null, null, null, "C2", null, "G2", null, null, null, null, null, "G2", null],
-        maracas: ["C4", null, "C4", null, "C4", null, "C4", "C4", "C4", null, "C4", null, "C4", null, "C4", "C4"],
-        drums: ["C2", null, null, null, "C2", null, null, null, "C2", null, null, null, "C2", null, null, null],
-        darkpulse: ["C3", null, null, "G3", null, null, "C3", null, "Bb2", null, null, "G2", null, "Bb2", null, null],
-        toms: ["C2", null, null, null, null, null, "G2", null, "C2", null, null, null, null, "G2", null, null],
-        industrial: ["C3", null, null, null, "C3", null, "Eb3", null, "C3", null, null, null, "G2", null, "Bb2", null],
-        ambient: ["C4", null, null, null, null, null, null, null, "G4", null, null, null, null, null, null, null],
-        wind: ["C4", null, null, null, null, null, null, null, null, null, "G4", null, null, null, null, null],
-        rain: ["C4", null, "C4", null, null, "C4", null, "C4", "C4", null, null, "C4", null, "C4", null, null],
-        echo: ["E5", null, null, null, "G5", null, null, null, "E5", null, null, null, "D5", null, null, null],
-        pad: ["C4", null, null, null, null, null, null, null, "E4", null, null, null, null, null, null, null],
-        chimes: [null, null, "G5", null, null, null, null, null, null, "E5", null, null, null, null, "C6", null]
-    };
+    const $ = id => document.getElementById(id);
 
+    const soundGrid = $('soundGrid');
+    const stepTrack = $('stepTrack');
 
+    const sliderIds = [
+        'volume', 'pitch', 'tone', 'reverb',
+        'delay', 'attack', 'release'
+    ];
 
-    const configs = {
-        xylophone: { type: "synth", osc: "triangle", attack: 0.005, decay: 0.18, sustain: 0.03, release: 0.15, volume: -7 },
-        bells: { type: "synth", osc: "sine", attack: 0.01, decay: 0.8, sustain: 0.02, release: 1.1, volume: -9 },
-        kalimba: { type: "synth", osc: "triangle", attack: 0.005, decay: 0.3, sustain: 0.02, release: 0.3, volume: -6 },
-        musicbox: { type: "synth", osc: "sine", attack: 0.005, decay: 0.5, sustain: 0.02, release: 0.6, volume: -10 },
-        celesta: { type: "synth", osc: "sine", attack: 0.01, decay: 0.6, sustain: 0.03, release: 0.8, volume: -10 },
-        sparkles: { type: "synth", osc: "sine", attack: 0.005, decay: 0.12, sustain: 0.01, release: 0.2, volume: -12 },
-        bass: { type: "mono", osc: "triangle", attack: 0.01, decay: 0.2, sustain: 0.35, release: 0.2, volume: -5, filter: 700 },
-        maracas: { type: "noise", noise: "white", attack: 0.001, decay: 0.055, sustain: 0, release: 0.03, volume: -19 },
-        drums: { type: "membrane", volume: -8, decay: 0.3 },
-        darkpulse: { type: "mono", osc: "sawtooth", attack: 0.01, decay: 0.15, sustain: 0.2, release: 0.15, volume: -12, filter: 2200 },
-        toms: { type: "membrane", volume: -12, decay: 0.3 },
-        industrial: { type: "mono", osc: "square", attack: 0.01, decay: 0.1, sustain: 0.1, release: 0.1, volume: -17, filter: 2200 },
-        ambient: { type: "poly", osc: "sine", attack: 0.5, decay: 0.4, sustain: 0.7, release: 1.5, volume: -13 },
-        wind: { type: "noise", noise: "pink", attack: 0.3, decay: 0.5, sustain: 0.3, release: 0.8, volume: -23 },
-        rain: { type: "noise", noise: "white", attack: 0.001, decay: 0.09, sustain: 0, release: 0.04, volume: -22 },
-        echo: { type: "synth", osc: "triangle", attack: 0.01, decay: 0.2, sustain: 0.05, release: 0.25, volume: -11 },
-        pad: { type: "poly", osc: "triangle", attack: 0.7, decay: 0.5, sustain: 0.65, release: 1.5, volume: -13 },
-        chimes: { type: "synth", osc: "sine", attack: 0.01, decay: 0.45, sustain: 0.02, release: 0.7, volume: -11 }
-    };
+    // ==========================================
+    // REMOVE EXTRA HELPER TEXT
+    // ==========================================
 
-   
-    Object.keys(configs).forEach(name => {
-        const c = configs[name];
-        settings[name] = {
-            volume: 75,
-            pitch: 0,
-            reverb: 25,
-            delay: 15,
-            attack: c.attack ?? 0.01,
-            decay: c.decay ?? 0.3,
-            sustain: c.sustain ?? 0.1,
-            release: c.release ?? 0.3,
-            filter: c.filter ?? 2200,
-            tone: c.osc ?? "sine"
-        };
-    });
+    const cleanStyle = document.createElement('style');
 
-
-    const definitions = {
-        synth: [
-            ["volume", "VOLUME", 0, 100, 1, "%"],
-            ["pitch", "PITCH", -12, 12, 1, " st"],
-            ["attack", "ATTACK", 0.001, 2, 0.001, " s"],
-            ["decay", "DECAY", 0.02, 2, 0.01, " s"],
-            ["sustain", "SUSTAIN", 0, 1, 0.01, ""],
-            ["release", "RELEASE", 0.02, 3, 0.01, " s"],
-            ["reverb", "REVERB", 0, 100, 1, "%"],
-            ["delay", "DELAY", 0, 100, 1, "%"]
-        ],
-        poly: [
-            ["volume", "VOLUME", 0, 100, 1, "%"],
-            ["pitch", "PITCH", -12, 12, 1, " st"],
-            ["attack", "ATTACK", 0.05, 3, 0.01, " s"],
-            ["decay", "DECAY", 0.02, 3, 0.01, " s"],
-            ["sustain", "SUSTAIN", 0, 1, 0.01, ""],
-            ["release", "RELEASE", 0.05, 5, 0.01, " s"],
-            ["reverb", "REVERB", 0, 100, 1, "%"],
-            ["delay", "DELAY", 0, 100, 1, "%"]
-        ],
-        mono: [
-            ["volume", "VOLUME", 0, 100, 1, "%"],
-            ["pitch", "PITCH", -12, 12, 1, " st"],
-            ["attack", "ATTACK", 0.001, 1, 0.001, " s"],
-            ["decay", "DECAY", 0.02, 1.5, 0.01, " s"],
-            ["sustain", "SUSTAIN", 0, 1, 0.01, ""],
-            ["release", "RELEASE", 0.02, 2, 0.01, " s"],
-            ["filter", "FILTER", 100, 8000, 50, " Hz"],
-            ["reverb", "REVERB", 0, 100, 1, "%"],
-            ["delay", "DELAY", 0, 100, 1, "%"]
-        ],
-        noise: [
-            ["volume", "INTENSITY", 0, 100, 1, "%"],
-            ["attack", "ATTACK", 0.001, 1.5, 0.001, " s"],
-            ["decay", "LENGTH", 0.02, 2, 0.01, " s"],
-            ["reverb", "REVERB", 0, 100, 1, "%"],
-            ["delay", "DELAY", 0, 100, 1, "%"]
-        ],
-        membrane: [
-            ["volume", "VOLUME", 0, 100, 1, "%"],
-            ["pitch", "PITCH", -12, 12, 1, " st"],
-            ["decay", "DECAY", 0.05, 1.5, 0.01, " s"],
-            ["reverb", "REVERB", 0, 100, 1, "%"],
-            ["delay", "DELAY", 0, 100, 1, "%"]
-        ]
-    };
-
-    function formatValue(key, value, suffix) {
-        if (key === "volume" || key === "reverb" || key === "delay") {
-            return Math.round(value) + suffix;
+    cleanStyle.textContent = `
+        .library-foot,
+        .settings-note,
+        .bottom-caption,
+        .live-indicator,
+        #soundGrid .sound-state {
+            display: none !important;
         }
-        if (key === "pitch") {
-            return (value > 0 ? "+" : "") + value + suffix;
+
+        #soundGrid > .sound-card {
+            display: flex;
+            flex-direction: column;
+            align-items: flex-start;
+            justify-content: space-between;
+            text-align: left;
+            min-width: 0;
         }
-        if (key === "filter") {
-            return Math.round(value) + suffix;
+
+        #soundGrid > .sound-card .sound-glyph {
+            display: block;
+            line-height: 1.2;
         }
-        return Number(value).toFixed(2) + suffix;
+
+        #soundGrid > .sound-card .sound-name {
+            display: block;
+            width: 100%;
+            margin-top: auto;
+            line-height: 1.25;
+            overflow-wrap: anywhere;
+        }
+
+        #soundGrid > .sound-card .sound-status {
+            display: flex;
+            align-items: center;
+            gap: 6px;
+        }
+
+        #soundGrid > .sound-card .sound-indicator {
+            display: inline-block;
+            width: 7px;
+            height: 7px;
+            flex: 0 0 7px;
+            border-radius: 50%;
+            background: rgba(25, 22, 37, .28);
+        }
+
+        #soundGrid > .sound-card.is-active .sound-indicator {
+            background: #191625;
+            box-shadow: 0 0 9px rgba(25, 22, 37, .4);
+        }
+
+        #soundGrid > .sound-card.is-muted {
+            opacity: .55;
+            filter: saturate(.65);
+        }
+
+        #soundGrid > .sound-card.is-active {
+            outline: 2px solid white;
+            outline-offset: -3px;
+        }
+
+        #soundGrid > .sound-card.is-solo {
+            outline-color: #D9FF61;
+            box-shadow: 0 0 15px rgba(217, 255, 97, .2);
+        }
+    `;
+
+    document.head.appendChild(cleanStyle);
+
+    // ==========================================
+    // HELPERS
+    // ==========================================
+
+    function outputText(param, value) {
+        const number = Number(value);
+
+        if (param === 'pitch') {
+            return `${number > 0 ? '+' : ''}${number} ST`;
+        }
+
+        if (param === 'attack' || param === 'release') {
+            return `${number.toFixed(2)} S`;
+        }
+
+        return `${Math.round(number)}%`;
     }
 
-    function createSettingsPanel(pad, name) {
-        const config = configs[name];
-        const wrapper = document.createElement("div");
-        wrapper.className = "sound-card-wrap";
+    function setSliderFill(input) {
+        if (!input) return;
 
-        pad.parentNode.insertBefore(wrapper, pad);
-        wrapper.appendChild(pad);
+        const min = Number(input.min);
+        const max = Number(input.max);
+        const value = Number(input.value);
+        const percent = ((value - min) / (max - min)) * 100;
 
-        const toggle = document.createElement("button");
-        toggle.type = "button";
-        toggle.className = "pad-settings-toggle";
-        toggle.setAttribute("aria-expanded", "false");
-        toggle.innerHTML = '<span>⚙</span> SOUND SETTINGS <span class="settings-chevron">⌄</span>';
-        pad.appendChild(toggle);
-
-        const panel = document.createElement("div");
-        panel.className = "pad-settings-panel";
-        panel.hidden = true;
-        panel.innerHTML = `
-            <div class="pad-settings-heading">
-                <span class="pad-settings-title">${name.toUpperCase()}</span>
-                <span class="pad-settings-caption">INDIVIDUAL CONTROLS</span>
-            </div>
-            <div class="pad-settings-grid"></div>
-            <button type="button" class="reset-layer">RESET SETTINGS</button>
-        `;
-
-        wrapper.appendChild(panel);
-
-        const grid = panel.querySelector(".pad-settings-grid");
-
-        definitions[config.type].forEach(([key, label, min, max, stepSize, suffix]) => {
-            const row = document.createElement("div");
-            row.className = "layer-control";
-
-            const id = `layer-${name}-${key}`;
-            row.innerHTML = `
-                <div class="layer-control-top">
-                    <label for="${id}">${label}</label>
-                    <output>${formatValue(key, settings[name][key], suffix)}</output>
-                </div>
-                <input id="${id}" type="range"
-                    min="${min}" max="${max}" step="${stepSize}"
-                    value="${settings[name][key]}"
-                    data-key="${key}">
-            `;
-
-            grid.appendChild(row);
-            const input = row.querySelector("input");
-            const output = row.querySelector("output");
-
-            input.addEventListener("input", () => {
-                const value = Number(input.value);
-                settings[name][key] = value;
-                output.textContent = formatValue(key, value, suffix);
-                applyLayerSetting(name, key, value);
-            });
-        });
-
-        toggle.addEventListener("click", () => {
-            const opening = panel.hidden;
-            panel.hidden = !opening;
-            toggle.setAttribute("aria-expanded", String(opening));
-            toggle.classList.toggle("is-open", opening);
-        });
-
-        panel.querySelector(".reset-layer").addEventListener("click", () => {
-            const c = configs[name];
-            settings[name] = {
-                volume: 75,
-                pitch: 0,
-                reverb: 25,
-                delay: 15,
-                attack: c.attack ?? 0.01,
-                decay: c.decay ?? 0.3,
-                sustain: c.sustain ?? 0.1,
-                release: c.release ?? 0.3,
-                filter: c.filter ?? 2200,
-                tone: c.osc ?? "sine"
-            };
-
-            panel.querySelectorAll("input").forEach(input => {
-                input.value = settings[name][input.dataset.key];
-                input.dispatchEvent(new Event("input"));
-            });
-        });
+        input.style.setProperty('--fill', `${percent}%`);
     }
 
-    pads.forEach(pad => {
-        const name = pad.dataset.sound;
-        if (configs[name]) createSettingsPanel(pad, name);
-    });
+    function isAudible(id) {
+        return Boolean(
+            settings[id] &&
+            !settings[id].muted &&
+            (!solo || solo === id)
+        );
+    }
 
+    function setStatus(message) {
+        const el = $('statusText');
 
-    async function initAudio() {
-        if (audioReady) {
-            await Tone.start();
+        if (el) {
+            el.textContent = message;
+        }
+    }
+
+    // ==========================================
+    // BUILD CARDS AND STEP SEQUENCE
+    // ==========================================
+
+    function renderCards() {
+        if (!soundGrid || !stepTrack) {
+            console.error('Не найдены soundGrid или stepTrack в index.html.');
             return;
         }
 
-        if (audioStarting) return;
-        audioStarting = true;
+        soundGrid.innerHTML = '';
+        stepTrack.innerHTML = '';
 
-        try {
-            await Tone.start();
-
-            master = new Tone.Volume(-3).toDestination();
-
-            globalReverb = new Tone.Reverb({
-                decay: 2.5,
-                wet: 0
-            });
-
-            globalDelay = new Tone.FeedbackDelay({
-                delayTime: "8n",
-                feedback: 0.22,
-                wet: 0
-            });
-
-            globalReverb.connect(globalDelay);
-            globalDelay.connect(master);
-
-            createInstruments();
-
-            Tone.Transport.scheduleRepeat(time => {
-                playSequenceStep(time);
-            }, "16n");
-
-            Tone.Transport.bpm.value = Number(tempoSlider.value);
-
-          
-            Tone.Transport.position = 0;
-            audioReady = true;
-            updateStatus("AUDIO READY");
-        } catch (error) {
-            console.error("Audio initialization error:", error);
-            updateStatus("AUDIO ERROR");
-        } finally {
-            audioStarting = false;
-        }
-    }
-
-    function createInstruments() {
-        Object.keys(configs).forEach(name => {
-            const c = configs[name];
-            let instrument;
-
-            const envelope = {
-                attack: c.attack ?? 0.01,
-                decay: c.decay ?? 0.3,
-                sustain: c.sustain ?? 0.1,
-                release: c.release ?? 0.3
+        instruments.forEach(inst => {
+            settings[inst.id] = {
+                ...defaults,
+                volume: Math.round(inst.base * 100),
+                attack: inst.attack,
+                release: inst.release
             };
 
-            if (c.type === "mono") {
-                instrument = new Tone.MonoSynth({
-                    oscillator: { type: c.osc },
-                    envelope,
+            const card = document.createElement('button');
+
+            card.type = 'button';
+            card.className = 'sound-card is-muted';
+            card.dataset.id = inst.id;
+            card.style.setProperty('--tile-color', inst.color);
+            card.style.setProperty('--accent', inst.color);
+
+            card.setAttribute('aria-pressed', 'false');
+            card.setAttribute('aria-label', `${inst.name}: выключен`);
+
+            card.innerHTML = `
+                <span class="sound-glyph">${inst.glyph}</span>
+                <span class="sound-name">${inst.name}</span>
+                <span class="sound-status">
+                    <i class="sound-indicator"></i>
+                    <span class="sound-state">OFF</span>
+                </span>
+            `;
+
+            card.addEventListener('click', () => {
+                handleCardClick(inst.id);
+            });
+
+            soundGrid.appendChild(card);
+        });
+
+        for (let i = 0; i < 16; i++) {
+            const cell = document.createElement('span');
+            cell.className = 'step-cell';
+            stepTrack.appendChild(cell);
+        }
+
+        renderStep(0);
+    }
+
+    // ==========================================
+    // SELECT SETTINGS PANEL
+    // ==========================================
+
+    function selectInstrument(id) {
+        selected = id;
+
+        const inst = instruments.find(item => item.id === id);
+        if (!inst) return;
+
+        $('selectedName').textContent = inst.name.toUpperCase();
+        $('selectedGlyph').textContent = inst.glyph;
+
+        $('selectedGlyph').style.color = inst.color;
+        $('selectedGlyph').style.background =
+            `color-mix(in srgb, ${inst.color} 16%, #28253e)`;
+
+        document.querySelectorAll('.setting-row').forEach(row => {
+            row.style.setProperty('--accent', inst.color);
+        });
+
+        sliderIds.forEach(param => {
+            const input = $(param);
+            const output = $(param + 'Value');
+
+            if (!input || !output) return;
+
+            input.value = settings[id][param];
+            output.textContent = outputText(param, settings[id][param]);
+
+            setSliderFill(input);
+        });
+
+        updateCardsState();
+        updateActionButtons();
+    }
+
+    // ==========================================
+    // ACTIVE / MUTED VISUAL STATES
+    // ==========================================
+
+    function updateCardsState() {
+        if (!soundGrid) return;
+
+        soundGrid.querySelectorAll('.sound-card').forEach(card => {
+            const id = card.dataset.id;
+            const muted = settings[id].muted;
+            const active = !muted && (!solo || solo === id);
+
+            // A muted card must never look active, even if it is selected.
+            card.classList.toggle('selected', id === selected && active);
+            card.classList.toggle('is-active', active);
+            card.classList.toggle('enabled', !muted);
+            card.classList.toggle('is-muted', muted);
+            card.classList.toggle('muted', muted);
+            card.classList.toggle('is-solo', solo === id);
+            card.classList.toggle('solo', solo === id);
+
+            card.setAttribute('aria-pressed', String(!muted));
+            card.setAttribute(
+                'aria-label',
+                `${instruments.find(inst => inst.id === id).name}: ${muted ? 'выключен' : 'включён'}`
+            );
+
+            const indicator = card.querySelector('.sound-indicator');
+            const state = card.querySelector('.sound-state');
+
+            if (indicator) {
+                indicator.classList.toggle('active', active);
+            }
+
+            if (state) {
+                state.textContent = muted ? 'OFF' : solo === id ? 'SOLO' : 'ON';
+            }
+        });
+    }
+
+    function updateActionButtons() {
+        const current = settings[selected];
+        if (!current) return;
+
+        $('muteBtn').classList.toggle('is-muted', current.muted);
+        $('muteBtn').classList.toggle('active', current.muted);
+
+        $('muteBtn').innerHTML = `
+            <span class="action-symbol">◖</span>
+            ${current.muted ? 'UNMUTE' : 'MUTE'}
+        `;
+
+        $('soloBtn').classList.toggle('is-solo', solo === selected);
+        $('soloBtn').classList.toggle('active', solo === selected);
+
+        $('activeBadge').textContent = current.muted
+            ? 'MUTED'
+            : solo === selected
+                ? 'SOLO'
+                : 'ACTIVE';
+
+        $('activeBadge').classList.toggle('muted', current.muted);
+        $('activeBadge').classList.toggle('is-muted', current.muted);
+    }
+
+    // ==========================================
+    // AUDIO VOICES
+    // ==========================================
+
+    function createVoice(inst) {
+        const filter = new Tone.Filter({
+            frequency: 14000,
+            type: 'lowpass',
+            rolloff: -12,
+            Q: 0.6
+        });
+
+        const level = new Tone.Gain(1);
+        const reverbSend = new Tone.Gain(0);
+        const delaySend = new Tone.Gain(0);
+
+        let synth;
+
+        switch (inst.kind) {
+            case 'pluck':
+                synth = new Tone.PluckSynth({
+                    attackNoise: 1.4,
+                    dampening: 2600,
+                    resonance: 0.82
+                });
+                break;
+
+            case 'fm':
+                synth = new Tone.FMSynth({
+                    harmonicity: 3.2,
+                    modulationIndex: 8,
+                    oscillator: { type: 'sine' },
+                    envelope: {
+                        attack: inst.attack,
+                        decay: 0.22,
+                        sustain: 0.12,
+                        release: inst.release
+                    },
+                    modulation: { type: 'sine' },
+                    modulationEnvelope: {
+                        attack: 0.01,
+                        decay: 0.2,
+                        sustain: 0.05,
+                        release: 0.2
+                    }
+                });
+                break;
+
+            case 'mono':
+                synth = new Tone.MonoSynth({
+                    oscillator: { type: 'sawtooth' },
                     filter: {
-                        type: "lowpass",
-                        frequency: c.filter,
-                        Q: 1
+                        Q: 2,
+                        type: 'lowpass',
+                        rolloff: -24
+                    },
+                    envelope: {
+                        attack: inst.attack,
+                        decay: 0.12,
+                        sustain: 0.3,
+                        release: inst.release
                     },
                     filterEnvelope: {
                         attack: 0.01,
                         decay: 0.15,
-                        sustain: 0.15,
-                        release: 0.2,
-                        baseFrequency: 120,
-                        octaves: 2
+                        sustain: 0.2,
+                        release: 0.3,
+                        baseFrequency: 180,
+                        octaves: 3
                     }
                 });
-            } else if (c.type === "noise") {
-                instrument = new Tone.NoiseSynth({
-                    noise: { type: c.noise },
-                    envelope
-                });
-            } else if (c.type === "membrane") {
-                instrument = new Tone.MembraneSynth({
-                    pitchDecay: 0.05,
-                    octaves: 3,
-                    oscillator: { type: "sine" },
+                break;
+
+            case 'poly':
+                synth = new Tone.PolySynth(Tone.Synth, {
+                    oscillator: { type: 'sine' },
                     envelope: {
-                        attack: 0.001,
-                        decay: c.decay,
-                        sustain: 0.01,
-                        release: 0.15
+                        attack: inst.attack,
+                        decay: 0.2,
+                        sustain: 0.25,
+                        release: inst.release
                     }
                 });
-            } else if (c.type === "poly") {
-                instrument = new Tone.PolySynth(Tone.Synth, {
-                    oscillator: { type: c.osc },
-                    envelope
+                break;
+
+            case 'noise':
+                synth = new Tone.NoiseSynth({
+                    noise: { type: inst.noise || 'white' },
+                    envelope: {
+                        attack: inst.attack,
+                        decay: 0.05,
+                        sustain: 0,
+                        release: inst.release
+                    }
                 });
-            } else {
-                instrument = new Tone.Synth({
-                    oscillator: { type: c.osc },
-                    envelope
+                break;
+
+            case 'membrane':
+                synth = new Tone.MembraneSynth({
+                    pitchDecay: 0.08,
+                    octaves: 3,
+                    oscillator: { type: 'sine' },
+                    envelope: {
+                        attack: inst.attack,
+                        decay: 0.3,
+                        sustain: 0,
+                        release: inst.release
+                    }
+                });
+                break;
+
+            case 'metal':
+                synth = new Tone.MetalSynth({
+                    frequency: 420,
+                    harmonicity: 5.1,
+                    modulationIndex: 26,
+                    resonance: 3200,
+                    octaves: 1.35,
+                    envelope: {
+                        attack: inst.attack,
+                        decay: inst.release,
+                        release: 0.12
+                    }
+                });
+                break;
+
+            default:
+                synth = new Tone.Synth({
+                    oscillator: { type: inst.type || 'triangle' },
+                    envelope: {
+                        attack: inst.attack,
+                        decay: 0.15,
+                        sustain: 0.15,
+                        release: inst.release
+                    }
+                });
+        }
+
+        synth.connect(filter);
+        filter.connect(level);
+
+        // Dry signal and independent effect sends.
+        level.connect(master);
+        level.connect(reverbSend);
+        level.connect(delaySend);
+
+        reverbSend.connect(reverb);
+        delaySend.connect(delay);
+
+        return {
+            synth,
+            filter,
+            level,
+            reverbSend,
+            delaySend,
+            kind: inst.kind
+        };
+    }
+
+    function ensureEngine() {
+        if (audioReady) return;
+
+        master = new Tone.Volume(Number($('master').value))
+            .toDestination();
+
+        reverb = new Tone.Reverb({
+            decay: 3.2,
+            wet: 1
+        });
+
+        delay = new Tone.FeedbackDelay({
+            delayTime: '8n',
+            feedback: 0.24,
+            wet: 1
+        });
+
+        reverb.connect(master);
+        delay.connect(master);
+
+        instruments.forEach(inst => {
+            voices[inst.id] = createVoice(inst);
+        });
+
+        Tone.Transport.bpm.value = Number($('tempo').value);
+        Tone.Transport.loop = false;
+
+        transportEvent = Tone.Transport.scheduleRepeat(onStep, '16n');
+
+        audioReady = true;
+
+        applyAllSettings();
+    }
+
+    // ==========================================
+    // INDEPENDENT SETTINGS FOR EACH LAYER
+    // ==========================================
+
+    function applySettings(id) {
+        if (!audioReady || !voices[id]) return;
+
+        const s = settings[id];
+        const voice = voices[id];
+
+        const audible = isAudible(id);
+
+        const targetVolume = audible ? s.volume / 100 : 0;
+
+        voice.level.gain.rampTo(targetVolume, 0.025);
+
+        const toneHz = 220 + Math.pow(s.tone / 100, 2.15) * 18500;
+
+        voice.filter.frequency.rampTo(toneHz, 0.06);
+
+        voice.reverbSend.gain.rampTo(
+            audible ? (s.reverb / 100) * 0.42 : 0,
+            0.04
+        );
+
+        voice.delaySend.gain.rampTo(
+            audible ? (s.delay / 100) * 0.34 : 0,
+            0.04
+        );
+
+        try {
+            if (voice.kind !== 'pluck' && voice.kind !== 'metal') {
+                voice.synth.set({
+                    envelope: {
+                        attack: Number(s.attack),
+                        release: Number(s.release)
+                    }
+                });
+            } else if (voice.kind === 'metal') {
+                voice.synth.set({
+                    envelope: {
+                        attack: Math.max(0.001, Number(s.attack)),
+                        decay: Math.max(0.06, Number(s.release))
+                    }
+                });
+
+                if (voice.synth.frequency) {
+                    voice.synth.frequency.rampTo(
+                        420 * Math.pow(2, Number(s.pitch) / 12),
+                        0.05
+                    );
+                }
+            } else if (voice.kind === 'pluck') {
+                voice.synth.set({
+                    dampening: 1200 + (2.5 - Number(s.release)) * 700
                 });
             }
-
-            instrument.volume.value = c.volume;
-
-            const effects = {
-                reverb: new Tone.Reverb({ decay: 2.5, wet: 0.25 }),
-                delay: new Tone.FeedbackDelay({
-                    delayTime: "8n",
-                    feedback: 0.22,
-                    wet: 0.15
-                })
-            };
-
-            instrument.connect(effects.reverb);
-            effects.reverb.connect(effects.delay);
-            effects.delay.connect(globalReverb);
-
-            instruments[name] = instrument;
-            layerEffects[name] = effects;
-
-            applyLayerSetting(name, "volume", settings[name].volume);
-            applyLayerSetting(name, "reverb", settings[name].reverb);
-            applyLayerSetting(name, "delay", settings[name].delay);
-        });
-    }
-
-
-    function applyLayerSetting(name, key, value) {
-        const instrument = instruments[name];
-        const effects = layerEffects[name];
-        const state = settings[name];
-
-        if (key === "volume" && instrument) {
-            instrument.volume.value = value === 0
-                ? -Infinity
-                : configs[name].volume + 20 * Math.log10(value / 75);
-        }
-
-        if (key === "reverb" && effects) {
-            effects.reverb.wet.value = value / 100;
-        }
-
-        if (key === "delay" && effects) {
-            effects.delay.wet.value = value / 100;
-        }
-
-        if (key === "filter" && instrument?.filter) {
-            instrument.filter.frequency.rampTo(value, 0.05);
-        }
-
-        if (key === "attack" && instrument?.envelope) {
-            instrument.envelope.attack = value;
-        }
-
-        if (key === "decay" && instrument?.envelope) {
-            instrument.envelope.decay = value;
-        }
-
-        if (key === "sustain" && instrument?.envelope) {
-            instrument.envelope.sustain = value;
-        }
-
-        if (key === "release" && instrument?.envelope) {
-            instrument.envelope.release = value;
-        }
-
-      
-        if (configs[name].type === "membrane" && instrument?.envelope) {
-            instrument.envelope.decay = state.decay;
+        } catch (error) {
+            console.warn('Instrument setting not supported:', error);
         }
     }
 
+    function applyAllSettings() {
+        instruments.forEach(inst => applySettings(inst.id));
+    }
 
-    function playSound(name, note, time) {
-        const instrument = instruments[name];
-        if (!instrument) return;
+    async function prepareAudio() {
+        if (!window.Tone) {
+            throw new Error('Tone.js не загрузился. Проверь интернет.');
+        }
 
-        const c = configs[name];
-        const state = settings[name];
-        const velocity = 0.75;
+        await Tone.start();
+        ensureEngine();
 
-        if (c.type === "noise") {
-            let duration = Math.max(0.02, state.decay);
+        if (!reverbReady) {
+            await reverb.generate();
+            reverbReady = true;
+        }
+    }
 
-            if (name === "wind") duration = Math.max(0.1, state.decay * 2);
-            if (name === "rain") duration = Math.max(0.02, state.decay * 0.5);
+    function restoreMasterVolume() {
+        if (!audioReady || !master) return;
 
-            instrument.triggerAttackRelease(duration, time, velocity);
+        masterMuted = false;
+
+        master.volume.rampTo(Number($('master').value), 0.04);
+    }
+
+    // ==========================================
+    // PLAY ONE NOTE
+    // ==========================================
+
+    function fire(id, note, time) {
+        if (!voices[id] || !isAudible(id)) return;
+
+        const inst = instruments.find(item => item.id === id);
+        const voice = voices[id];
+        const s = settings[id];
+
+        const velocity = Math.min(
+            0.95,
+            Math.max(0.08, 0.7 + (s.volume / 100) * 0.25)
+        );
+
+        try {
+            if (inst.kind === 'noise') {
+                voice.synth.triggerAttackRelease(
+                    Math.max(0.04, Number(s.release) * 0.28),
+                    time,
+                    velocity
+                );
+                return;
+            }
+
+            if (inst.kind === 'metal') {
+                voice.synth.triggerAttackRelease(
+                    Math.max(0.07, Number(s.release) * 0.38),
+                    time,
+                    velocity
+                );
+                return;
+            }
+
+            const shiftedNote = Tone.Frequency(note)
+                .transpose(Number(s.pitch))
+                .toNote();
+
+            if (inst.kind === 'pluck') {
+                voice.synth.triggerAttack(shiftedNote, time, velocity);
+            } else if (inst.kind === 'membrane') {
+                voice.synth.triggerAttackRelease(
+                    shiftedNote, '8n', time, velocity
+                );
+            } else {
+                voice.synth.triggerAttackRelease(
+                    shiftedNote,
+                    Math.max(0.08, Math.min(1.8, Number(s.release) * 0.6)),
+                    time,
+                    velocity
+                );
+            }
+        } catch (error) {
+            console.warn(`Could not play ${id}:`, error);
+        }
+    }
+
+    // ==========================================
+    // CARD CLICK = TOGGLE SOUND
+    // ==========================================
+
+    async function handleCardClick(id) {
+        selectInstrument(id);
+
+        // SECOND CLICK: turn the layer off.
+        if (!settings[id].muted) {
+            settings[id].muted = true;
+
+            if (solo === id) {
+                solo = null;
+            }
+
+            applyAllSettings();
+            updateCardsState();
+            updateActionButtons();
+
+            const activeCount = instruments.filter(inst =>
+                isAudible(inst.id)
+            ).length;
+
+            if (isPlaying && activeCount === 0) {
+                setStatus('NO ACTIVE LAYERS');
+            }
+
             return;
         }
 
-        const transposedNote = Tone.Frequency(note)
-            .transpose(currentPitch + state.pitch)
-            .toNote();
+        // FIRST CLICK: turn this layer on and preview it.
+        settings[id].muted = false;
 
-        let duration = "16n";
+        // Selecting a new layer exits solo mode.
+        solo = null;
 
-        if (["bells", "celesta", "musicbox", "chimes"].includes(name)) {
-            duration = "8n";
-        }
+        updateCardsState();
+        updateActionButtons();
 
-        if (["ambient", "pad"].includes(name)) {
-            duration = "2n";
-        }
+        try {
+            await prepareAudio();
 
-        if (name === "bass") duration = "8n";
+            restoreMasterVolume();
+            applyAllSettings();
 
-        if (c.type === "membrane") {
-            instrument.triggerAttackRelease(
-                transposedNote,
-                Math.max(0.05, state.decay),
-                time,
-                velocity
+            const inst = instruments.find(item => item.id === id);
+            const firstNote = inst.pattern.find(
+                event => event !== null && event !== undefined
             );
-        } else {
-            instrument.triggerAttackRelease(
-                transposedNote,
-                duration,
-                time,
-                velocity
-            );
+
+            if (firstNote !== undefined) {
+                fire(id, firstNote, Tone.now() + 0.03);
+            }
+
+            if (!isPlaying) {
+                setStatus('LAYER PREVIEW');
+            }
+        } catch (error) {
+            console.error(error);
+            setStatus('AUDIO ERROR');
         }
     }
 
-    function playSequenceStep(time) {
-        Object.keys(patterns).forEach(name => {
-            if (!activeSounds.has(name)) return;
+    // ==========================================
+    // 16-STEP SEQUENCER
+    // ==========================================
 
-            const note = patterns[name][step];
-            if (note) playSound(name, note, time);
+    function onStep(time) {
+        const currentStep = step;
+
+        instruments.forEach(inst => {
+            const event = inst.pattern[currentStep];
+
+            if (event !== null && event !== undefined) {
+                fire(inst.id, event, time);
+            }
         });
+
+        if (window.Tone && Tone.Draw) {
+            Tone.Draw.schedule(() => {
+                renderStep(currentStep);
+            }, time);
+        }
 
         step = (step + 1) % 16;
     }
 
+    function renderStep(currentStep) {
+        if (!stepTrack) return;
 
-    function startPlayback() {
-        if (!audioReady || activeSounds.size === 0) {
-            if (activeSounds.size === 0) updateStatus("SELECT A SOUND FIRST");
+        stepTrack.querySelectorAll('.step-cell').forEach((cell, index) => {
+            cell.classList.toggle('active', index === currentStep);
+        });
+
+        $('stepCounter').textContent =
+            `STEP ${String(currentStep + 1).padStart(2, '0')} / 16`;
+    }
+
+    // ==========================================
+    // START / STOP
+    // ==========================================
+
+    async function startAudio() {
+        if (isPlaying) return;
+
+        const activeLayers = instruments.filter(inst => isAudible(inst.id));
+
+        if (activeLayers.length === 0) {
+            setStatus('CHOOSE A SOUND FIRST');
             return;
         }
 
-        if (Tone.Transport.state !== "started") {
+        $('startBtn').disabled = true;
+
+        try {
+            await prepareAudio();
+
+            restoreMasterVolume();
+            applyAllSettings();
+
+            Tone.Transport.bpm.value = Number($('tempo').value);
             Tone.Transport.start();
-        }
 
-        playIcon.textContent = "Ⅱ";
-        playText.textContent = "PLAYING";
-        statusContainer.classList.add("playing");
-        updateStatus("PLAYING");
+            isPlaying = true;
+
+            $('startLabel').textContent = 'PLAYING';
+            $('startBtn').classList.add('is-playing');
+
+            setStatus(`PLAYING ${activeLayers.length} LAYER(S)`);
+        } catch (error) {
+            console.error(error);
+            setStatus('AUDIO ERROR — CHECK CONNECTION');
+        } finally {
+            $('startBtn').disabled = false;
+        }
     }
 
-    function stopPlayback() {
-        if (audioReady) {
+    function stopAudio() {
+        // Stop the sequence first.
+        if (audioReady && Tone.Transport) {
             Tone.Transport.stop();
-            Tone.Transport.position = 0;
+            Tone.Transport.position = '0:0:0';
         }
 
+        isPlaying = false;
         step = 0;
-        playIcon.textContent = "▶";
-        playText.textContent = "PLAY";
-        statusContainer.classList.remove("playing");
+        solo = null;
 
-        updateStatus(activeSounds.size ? "LAYERS READY" : "READY TO PLAY");
+        // Every layer gets switched off.
+        instruments.forEach(inst => {
+            settings[inst.id].muted = true;
+        });
+
+        // Hard mute the master output to cut any remaining effect tails.
+        if (audioReady && master) {
+            master.volume.value = -60;
+            masterMuted = true;
+
+            applyAllSettings();
+        }
+
+        $('startLabel').textContent = 'START AUDIO';
+        $('startBtn').classList.remove('is-playing');
+
+        // Reset every active visual state.
+        updateCardsState();
+        updateActionButtons();
+        renderStep(0);
+
+        setStatus('READY');
     }
 
-    playButton.addEventListener("click", async () => {
-        await initAudio();
-        if (!audioReady) return;
+    $('startBtn').addEventListener('click', startAudio);
+    $('stopBtn').addEventListener('click', stopAudio);
 
-        if (Tone.Transport.state === "started") {
-            stopPlayback();
-        } else {
-            startPlayback();
-        }
-    });
+    // ==========================================
+    // SLIDERS
+    // ==========================================
 
-    stopButton.addEventListener("click", stopPlayback);
+    sliderIds.forEach(param => {
+        const input = $(param);
 
+        input.addEventListener('input', () => {
+            settings[selected][param] = Number(input.value);
 
+            $(param + 'Value').textContent =
+                outputText(param, input.value);
 
-    pads.forEach(pad => {
-        pad.addEventListener("click", async event => {
-         
-            if (event.target.closest(".pad-settings-toggle")) return;
-
-            await initAudio();
-            if (!audioReady) return;
-
-            const name = pad.dataset.sound;
-
-            if (activeSounds.has(name)) {
-                activeSounds.delete(name);
-                pad.classList.remove("active");
-                pad.querySelector(".pad-state").textContent = "TAP TO ACTIVATE";
-            } else {
-                activeSounds.add(name);
-                pad.classList.add("active");
-                pad.querySelector(".pad-state").textContent = "LAYER ACTIVE";
-            }
-
-            selectedSound.textContent = name.toUpperCase();
-
-            if (activeSounds.size === 0) {
-                stopPlayback();
-                updateStatus("SELECT A SOUND");
-            } else {
-                updateStatus(activeSounds.size + " ACTIVE LAYER(S)");
-                if (Tone.Transport.state !== "started") startPlayback();
-            }
+            setSliderFill(input);
+            applySettings(selected);
         });
+
+        setSliderFill(input);
     });
 
+    $('tempo').addEventListener('input', event => {
+        $('tempoValue').textContent = event.target.value;
 
-
-    tempoSlider.addEventListener("input", () => {
-        const bpm = Number(tempoSlider.value);
-        tempoValue.textContent = bpm + " BPM";
-
-        if (audioReady) Tone.Transport.bpm.rampTo(bpm, 0.08);
-    });
-
-    volumeSlider.addEventListener("input", () => {
-        const value = Number(volumeSlider.value);
-        volumeValue.textContent = value + "%";
+        setSliderFill(event.target);
 
         if (audioReady) {
-            master.volume.value = value === 0
-                ? -Infinity
-                : 20 * Math.log10(value / 100);
+            Tone.Transport.bpm.rampTo(
+                Number(event.target.value),
+                0.08
+            );
         }
     });
 
-    pitchSlider.addEventListener("input", () => {
-        currentPitch = Number(pitchSlider.value);
-        pitchValue.textContent = currentPitch > 0
-            ? "+" + currentPitch
-            : String(currentPitch);
+    $('master').addEventListener('input', event => {
+        const value = Number(event.target.value);
+
+        $('masterValue').textContent =
+            value < 0 ? `−${Math.abs(value)}` : String(value);
+
+        setSliderFill(event.target);
+
+        // If STOP is active, keep the output muted until the next play action.
+        if (audioReady && !masterMuted) {
+            master.volume.rampTo(value, 0.08);
+        }
     });
 
-    reverbSlider.addEventListener("input", () => {
-        const value = Number(reverbSlider.value);
-        reverbValue.textContent = value + "%";
+    // ==========================================
+    // MUTE / SOLO / RESET BUTTONS
+    // ==========================================
 
-        if (audioReady) globalReverb.wet.value = value / 100;
+    $('muteBtn').addEventListener('click', () => {
+        settings[selected].muted = !settings[selected].muted;
+
+        if (settings[selected].muted && solo === selected) {
+            solo = null;
+        }
+
+        applyAllSettings();
+        updateCardsState();
+        updateActionButtons();
     });
 
-    delaySlider.addEventListener("input", () => {
-        const value = Number(delaySlider.value);
-        delayValue.textContent = value + "%";
+    $('soloBtn').addEventListener('click', () => {
+        if (solo === selected) {
+            solo = null;
+        } else {
+            settings[selected].muted = false;
+            solo = selected;
+        }
 
-        if (audioReady) globalDelay.wet.value = value / 100;
+        applyAllSettings();
+        updateCardsState();
+        updateActionButtons();
     });
 
-    function updateStatus(message) {
-        statusText.textContent = message;
-    }
+    $('resetBtn').addEventListener('click', () => {
+        const inst = instruments.find(item => item.id === selected);
+        const mutedState = settings[selected].muted;
 
+        settings[selected] = {
+            ...defaults,
+            volume: Math.round(inst.base * 100),
+            attack: inst.attack,
+            release: inst.release,
+            muted: mutedState
+        };
 
+        if (solo === selected && mutedState) {
+            solo = null;
+        }
 
-    tempoValue.textContent = tempoSlider.value + " BPM";
-    volumeValue.textContent = volumeSlider.value + "%";
-    pitchValue.textContent = "0";
-    reverbValue.textContent = reverbSlider.value + "%";
-    delayValue.textContent = delaySlider.value + "%";
-    updateStatus("READY TO PLAY");
-});
+        selectInstrument(selected);
+        applyAllSettings();
+        updateCardsState();
+        updateActionButtons();
+    });
+
+    // ==========================================
+    // INITIALIZATION
+    // ==========================================
+
+    renderCards();
+    selectInstrument(selected);
+
+    setSliderFill($('tempo'));
+    setSliderFill($('master'));
+
+    // All layers are muted on page load.
+    // No audio starts automatically.
+})();
