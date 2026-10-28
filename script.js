@@ -2,10 +2,7 @@
 (() => {
     'use strict';
 
-    // ==========================================
-    // DUALITY — NEON SOUND LAB
-    // ==========================================
-
+  
     const instruments = [
         {
             id: 'xylophone', name: 'Xylophone', glyph: '✳',
@@ -117,9 +114,7 @@
         }
     ];
 
-    // ==========================================
-    // STATE
-    // ==========================================
+
 
     const defaults = {
         volume: 72,
@@ -158,9 +153,7 @@
         'delay', 'attack', 'release'
     ];
 
-    // ==========================================
-    // REMOVE EXTRA HELPER TEXT
-    // ==========================================
+
 
     const cleanStyle = document.createElement('style');
 
@@ -233,9 +226,7 @@
 
     document.head.appendChild(cleanStyle);
 
-    // ==========================================
-    // HELPERS
-    // ==========================================
+
 
     function outputText(param, value) {
         const number = Number(value);
@@ -278,9 +269,7 @@
         }
     }
 
-    // ==========================================
-    // BUILD CARDS AND STEP SEQUENCE
-    // ==========================================
+
 
     function renderCards() {
         if (!soundGrid || !stepTrack) {
@@ -335,9 +324,7 @@
         renderStep(0);
     }
 
-    // ==========================================
-    // SELECT SETTINGS PANEL
-    // ==========================================
+
 
     function selectInstrument(id) {
         selected = id;
@@ -372,9 +359,7 @@
         updateActionButtons();
     }
 
-    // ==========================================
-    // ACTIVE / MUTED VISUAL STATES
-    // ==========================================
+
 
     function updateCardsState() {
         if (!soundGrid) return;
@@ -384,7 +369,7 @@
             const muted = settings[id].muted;
             const active = !muted && (!solo || solo === id);
 
-            // A muted card must never look active, even if it is selected.
+           
             card.classList.toggle('selected', id === selected && active);
             card.classList.toggle('is-active', active);
             card.classList.toggle('enabled', !muted);
@@ -437,9 +422,7 @@
         $('activeBadge').classList.toggle('is-muted', current.muted);
     }
 
-    // ==========================================
-    // AUDIO VOICES
-    // ==========================================
+
 
     function createVoice(inst) {
         const filter = new Tone.Filter({
@@ -578,7 +561,7 @@
         synth.connect(filter);
         filter.connect(level);
 
-        // Dry signal and independent effect sends.
+        
         level.connect(master);
         level.connect(reverbSend);
         level.connect(delaySend);
@@ -630,9 +613,7 @@
         applyAllSettings();
     }
 
-    // ==========================================
-    // INDEPENDENT SETTINGS FOR EACH LAYER
-    // ==========================================
+
 
     function applySettings(id) {
         if (!audioReady || !voices[id]) return;
@@ -718,9 +699,7 @@
         master.volume.rampTo(Number($('master').value), 0.04);
     }
 
-    // ==========================================
-    // PLAY ONE NOTE
-    // ==========================================
+
 
     function fire(id, note, time) {
         if (!voices[id] || !isAudible(id)) return;
@@ -776,14 +755,12 @@
         }
     }
 
-    // ==========================================
-    // CARD CLICK = TOGGLE SOUND
-    // ==========================================
+
 
     async function handleCardClick(id) {
         selectInstrument(id);
 
-        // SECOND CLICK: turn the layer off.
+       
         if (!settings[id].muted) {
             settings[id].muted = true;
 
@@ -806,10 +783,10 @@
             return;
         }
 
-        // FIRST CLICK: turn this layer on and preview it.
+       
         settings[id].muted = false;
 
-        // Selecting a new layer exits solo mode.
+       
         solo = null;
 
         updateCardsState();
@@ -839,9 +816,7 @@
         }
     }
 
-    // ==========================================
-    // 16-STEP SEQUENCER
-    // ==========================================
+
 
     function onStep(time) {
         const currentStep = step;
@@ -874,9 +849,7 @@
             `STEP ${String(currentStep + 1).padStart(2, '0')} / 16`;
     }
 
-    // ==========================================
-    // START / STOP
-    // ==========================================
+
 
     async function startAudio() {
         if (isPlaying) return;
@@ -914,7 +887,7 @@
     }
 
     function stopAudio() {
-        // Stop the sequence first.
+        
         if (audioReady && Tone.Transport) {
             Tone.Transport.stop();
             Tone.Transport.position = '0:0:0';
@@ -924,12 +897,12 @@
         step = 0;
         solo = null;
 
-        // Every layer gets switched off.
+        
         instruments.forEach(inst => {
             settings[inst.id].muted = true;
         });
 
-        // Hard mute the master output to cut any remaining effect tails.
+        
         if (audioReady && master) {
             master.volume.value = -60;
             masterMuted = true;
@@ -940,7 +913,7 @@
         $('startLabel').textContent = 'START AUDIO';
         $('startBtn').classList.remove('is-playing');
 
-        // Reset every active visual state.
+        
         updateCardsState();
         updateActionButtons();
         renderStep(0);
@@ -951,9 +924,7 @@
     $('startBtn').addEventListener('click', startAudio);
     $('stopBtn').addEventListener('click', stopAudio);
 
-    // ==========================================
-    // SLIDERS
-    // ==========================================
+
 
     sliderIds.forEach(param => {
         const input = $(param);
@@ -992,15 +963,13 @@
 
         setSliderFill(event.target);
 
-        // If STOP is active, keep the output muted until the next play action.
+       
         if (audioReady && !masterMuted) {
             master.volume.rampTo(value, 0.08);
         }
     });
 
-    // ==========================================
-    // MUTE / SOLO / RESET BUTTONS
-    // ==========================================
+
 
     $('muteBtn').addEventListener('click', () => {
         settings[selected].muted = !settings[selected].muted;
@@ -1049,9 +1018,7 @@
         updateActionButtons();
     });
 
-    // ==========================================
-    // INITIALIZATION
-    // ==========================================
+
 
     renderCards();
     selectInstrument(selected);
@@ -1059,6 +1026,5 @@
     setSliderFill($('tempo'));
     setSliderFill($('master'));
 
-    // All layers are muted on page load.
-    // No audio starts automatically.
+ 
 })();

@@ -1,7 +1,4 @@
-/* =========================================
-   DUALITY — NEON SOUND LAB
-   Colorful interface / one-screen layout
-========================================= */
+
 
 :root {
     --bg: #10101c;
@@ -31,7 +28,7 @@
     --font-mono: "DM Mono", monospace;
 }
 
-/* ===== RESET ===== */
+
 
 * {
     box-sizing: border-box;
@@ -89,7 +86,7 @@ button {
     background: var(--lime);
 }
 
-/* ===== BACKGROUND GLOWS ===== */
+
 
 .ambient {
     position: fixed;
@@ -119,7 +116,7 @@ button {
     background: var(--pink);
 }
 
-/* ===== APP LAYOUT ===== */
+
 
 .app-shell {
     width: 100%;
@@ -137,7 +134,7 @@ button {
     gap: 13px;
 }
 
-/* ===== TOP BAR ===== */
+
 
 .topbar {
     display: flex;
@@ -214,7 +211,7 @@ button {
     color: var(--muted);
 }
 
-/* ===== TRANSPORT ===== */
+
 
 .transport-head {
     display: flex;
@@ -331,7 +328,7 @@ button {
     transform: scale(0.96);
 }
 
-/* ===== MAIN TWO-COLUMN WORKSPACE ===== */
+
 
 .workbench {
     display: grid;
@@ -345,7 +342,7 @@ button {
     min-width: 0;
 }
 
-/* ===== PANELS ===== */
+
 
 .panel {
     min-width: 0;
@@ -369,7 +366,7 @@ button {
     overflow: hidden;
 }
 
-/* ===== LIBRARY PANEL ===== */
+
 
 .library-panel {
     display: flex;
@@ -454,7 +451,7 @@ button {
     letter-spacing: 0.3px;
 }
 
-/* ===== SOUND GRID ===== */
+
 
 .sound-grid {
     display: grid;
@@ -468,10 +465,7 @@ button {
     min-height: 0;
 }
 
-/*
-   Универсальные стили для карточек,
-   созданных JavaScript внутри #soundGrid.
-*/
+
 
 #soundGrid>* {
     --tile-color: var(--pink);
@@ -564,7 +558,7 @@ button {
     box-shadow: 0 8px 22px rgba(0, 0, 0, 0.18);
 }
 
-/* Selected / active instrument */
+
 
 #soundGrid>.selected,
 #soundGrid>.is-selected,
@@ -593,7 +587,7 @@ button {
     outline-offset: -3px;
 }
 
-/* Elements inside sound tiles */
+
 
 #soundGrid>* .sound-glyph,
 #soundGrid>* .sound-icon,
@@ -637,7 +631,7 @@ button {
     box-shadow: 0 0 10px rgba(25, 22, 37, 0.4);
 }
 
-/* ===== LIBRARY FOOTER ===== */
+
 
 .library-foot {
     flex-shrink: 0;
@@ -677,7 +671,7 @@ button {
     opacity: 0.7;
 }
 
-/* ===== SETTINGS PANEL ===== */
+
 
 .settings-panel {
     position: relative;
@@ -774,7 +768,7 @@ button {
     color: var(--pink);
 }
 
-/* ===== PARAMETER SLIDERS ===== */
+
 
 .setting-list {
     display: flex;
@@ -853,7 +847,7 @@ button {
     color: var(--range-color);
 }
 
-/* Shared range input */
+
 
 input[type="range"] {
     --range-color: var(--accent);
@@ -906,7 +900,7 @@ input[type="range"] {
     --range-color: var(--lime);
 }
 
-/* Chrome / Edge / Safari */
+
 
 input[type="range"]::-webkit-slider-runnable-track {
     height: 5px;
@@ -942,7 +936,7 @@ input[type="range"]:hover::-webkit-slider-thumb {
     transform: scale(1.18);
 }
 
-/* Firefox */
+
 
 input[type="range"]::-moz-range-track {
     height: 5px;
@@ -972,7 +966,7 @@ input[type="range"]::-moz-range-thumb {
     box-shadow: 0 0 10px rgba(255, 255, 255, 0.12);
 }
 
-/* ===== MUTE / SOLO / RESET ===== */
+
 
 .layer-actions {
     display: grid;
@@ -1056,7 +1050,7 @@ input[type="range"]::-moz-range-thumb {
     background: var(--panel-hover);
 }
 
-/* ===== SETTINGS NOTE ===== */
+
 
 .settings-note {
     display: flex;
@@ -1079,7 +1073,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 13px;
 }
 
-/* ===== BOTTOM GLOBAL CONTROLS ===== */
+
 
 .bottom-panel {
     display: grid;
@@ -1163,7 +1157,7 @@ input[type="range"]::-moz-range-thumb {
     --range-color: var(--cyan);
 }
 
-/* ===== STEP SEQUENCE ===== */
+
 
 .step-track-wrap {
     min-width: 0;
@@ -1224,7 +1218,7 @@ input[type="range"]::-moz-range-thumb {
     background: var(--cyan);
 }
 
-/* ===== BOTTOM CAPTION ===== */
+
 
 .bottom-caption {
     display: flex;
@@ -1247,7 +1241,7 @@ input[type="range"]::-moz-range-thumb {
     font-size: 11px;
 }
 
-/* ===== ANIMATIONS ===== */
+
 
 @keyframes softPulse {
 
@@ -1266,7 +1260,7 @@ input[type="range"]::-moz-range-thumb {
     animation: softPulse 1s ease-in-out infinite;
 }
 
-/* ===== SHORT DESKTOP SCREENS ===== */
+
 
 @media (max-height: 790px) and (min-width: 901px) {
     .app-shell {
@@ -1373,7 +1367,7 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-/* ===== TABLET ===== */
+
 
 @media (max-width: 1100px) {
     .app-shell {
@@ -1409,7 +1403,7 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-/* ===== MOBILE / NARROW LAYOUT ===== */
+
 
 @media (max-width: 900px) {
     body {
@@ -1488,7 +1482,7 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-/* ===== SMALL MOBILE ===== */
+
 
 @media (max-width: 480px) {
     .app-shell {
@@ -1582,7 +1576,7 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-/* ===== ACCESSIBILITY ===== */
+
 
 @media (prefers-reduced-motion: reduce) {
 
@@ -1595,7 +1589,7 @@ input[type="range"]::-moz-range-thumb {
         transition-duration: 0.01ms !important;
     }
 }
-/* Убираем названия инструментов с цветных карточек */
+
 #soundGrid>.sound-card .sound-name {
     display: none !important;
 }
