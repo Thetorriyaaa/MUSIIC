@@ -2,9 +2,7 @@
 (() => {
     'use strict';
 
-    // =========================================================
-    // 1. INSTRUMENTS
-    // =========================================================
+
 
     const instruments = [
         {
@@ -117,8 +115,7 @@
         }
     ];
 
-    // Voice A: melodic instruments, stereo left.
-    // Voice B: bass, percussion and atmosphere, stereo right.
+
 
     const defaults = {
         volume: 72,
@@ -155,9 +152,7 @@
         'delay', 'attack', 'release'
     ];
 
-    // =========================================================
-    // 2. HELPERS AND UI
-    // =========================================================
+
 
     function setStatus(message) {
         const element = $('statusText');
@@ -370,9 +365,7 @@
         }
     }
 
-    // =========================================================
-    // 3. TWO INDEPENDENT AUDIO BUSES
-    // =========================================================
+
 
     function createBus(id, pan, reverbDecay, delayTime, feedback) {
         const input = new Tone.Gain(1);
@@ -389,12 +382,12 @@
             wet: 1
         });
 
-        // Dry signal and both effects go to this voice's own panner.
+     
         input.connect(panner);
         reverb.connect(panner);
         delay.connect(panner);
 
-        // Each bus is panned separately before reaching the master.
+     
         panner.connect(master);
 
         return {
@@ -529,10 +522,10 @@
         synth.connect(filter);
         filter.connect(level);
 
-        // Dry route into this instrument's own voice bus.
+
         level.connect(bus.input);
 
-        // Independent sends into the effects belonging to this bus.
+  
         level.connect(reverbSend);
         level.connect(delaySend);
 
@@ -588,9 +581,7 @@
         }
     }
 
-    // =========================================================
-    // 4. INSTRUMENT SETTINGS
-    // =========================================================
+
 
     function applySettings(id) {
         if (!audioReady || !voices[id]) return;
@@ -631,7 +622,7 @@
                 });
             }
         } catch (error) {
-            // Some synth types expose different envelope parameters.
+            
             console.warn(`Setting not supported for ${id}:`, error);
         }
     }
@@ -647,9 +638,7 @@
         master.volume.rampTo(Number($('master').value), 0.04);
     }
 
-    // =========================================================
-    // 5. PLAYING NOTES
-    // =========================================================
+
 
     function fire(id, note, time) {
         if (!voices[id] || !isAudible(id)) return;
@@ -751,9 +740,7 @@
         }
     }
 
-    // =========================================================
-    // 6. 16-STEP SEQUENCER
-    // =========================================================
+
 
     function onStep(time) {
         const currentStep = step;
@@ -787,9 +774,7 @@
         }
     }
 
-    // =========================================================
-    // 7. START AND STOP
-    // =========================================================
+
 
     async function startAudio() {
         if (isPlaying) return;
@@ -842,7 +827,7 @@
         step = 0;
         solo = null;
 
-        // Keep the selected layers enabled so playback can resume.
+     
         if (audioReady && master) {
             master.volume.rampTo(Number($('master').value), 0.04);
             masterMuted = false;
@@ -862,9 +847,7 @@
         setStatus('READY');
     }
 
-    // =========================================================
-    // 8. EVENT LISTENERS
-    // =========================================================
+
 
     $('startBtn').addEventListener('click', startAudio);
     $('stopBtn').addEventListener('click', stopAudio);
@@ -953,9 +936,7 @@
         updateActionButtons();
     });
 
-    // =========================================================
-    // 9. INITIALISE
-    // =========================================================
+
 
     initialiseSettings();
     renderCards();
