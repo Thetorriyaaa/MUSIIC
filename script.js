@@ -726,57 +726,62 @@ function applySettings(id) {
         }
     }
 
-    async function handleCardClick(id) {
-        selectInstrument(id);
 
-        if (!settings[id].muted) {
-            settings[id].muted = true;
+async function handleCardClick(id) {
+    if (!settings[id]) return;
 
-            if (solo === id) solo = null;
 
-            applyAllSettings();
-            updateCardsState();
-            updateActionButtons();
+    if (selected === id && !settings[id].muted) {
+        settings[id].muted = true;
 
-            const activeCount = instruments.filter(inst =>
-                isAudible(inst.id)
-            ).length;
+        if (solo === id) solo = null;
 
-            if (isPlaying && activeCount === 0) {
-                setStatus('NO ACTIVE LAYERS');
-            } else if (!isPlaying) {
-                setStatus('LAYER MUTED');
-            }
-
-            return;
-        }
-
-        settings[id].muted = false;
-        solo = null;
-
+        applyAllSettings();
         updateCardsState();
         updateActionButtons();
 
-        try {
-            await prepareAudio();
-            restoreMasterVolume();
-            applyAllSettings();
-
-            const inst = getInstrument(id);
-            const firstNote = inst.pattern.find(
-                event => event !== null && event !== undefined
-            );
-
-            if (firstNote !== undefined) {
-                fire(id, firstNote, Tone.now() + 0.03);
-            }
-
-            if (!isPlaying) setStatus(`VOICE ${inst.group} PREVIEW`);
-        } catch (error) {
-            console.error(error);
-            setStatus('AUDIO ERROR — CHECK CONNECTION');
-        }
+        setStatus(isPlaying ? 'LAYER MUTED' : 'LAYER OFF');
+        return;
     }
+
+
+    selectInstrument(id);
+
+
+    if (!settings[id].muted) {
+        setStatus(`VOICE ${getInstrument(id).group} SELECTED`);
+        return;
+    }
+
+
+    settings[id].muted = false;
+    solo = null;
+
+    try {
+        await prepareAudio();
+        restoreMasterVolume();
+        applyAllSettings();
+
+        const inst = getInstrument(id);
+        const firstNote = inst.pattern.find(
+            event => event !== null && event !== undefined
+        );
+
+        if (!isPlaying && firstNote !== undefined) {
+            fire(id, firstNote, Tone.now() + 0.03);
+        }
+
+        setStatus(`VOICE ${inst.group} ON`);
+    } catch (error) {
+        console.error(error);
+        settings[id].muted = true;
+        setStatus('AUDIO ERROR — CHECK CONNECTION');
+    }
+
+    updateCardsState();
+    updateActionButtons();
+}
+
 
 
 
