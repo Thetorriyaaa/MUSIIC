@@ -8,7 +8,7 @@
         {
             id: 'xylophone', name: 'Xylophone', glyph: '✳',
             color: '#FF5D8F', kind: 'synth', type: 'triangle',
-            group: 'A', base: 0.72, attack: 0.03, release: 0.35,
+            group: 'A', base: 0.30, attack: 0.03, release: 0.35,
             pattern: ['C5', null, 'E5', null, 'G5', null, 'E5', null, 'D5', null, 'F5', null, 'A5', null, 'G5', null]
         },
         {
@@ -583,49 +583,87 @@
 
 
 
-    function applySettings(id) {
-        if (!audioReady || !voices[id]) return;
 
-        const s = settings[id];
-        const voice = voices[id];
-        const audible = isAudible(id);
+function applySettings(id) {
+    if (!audioReady || !voices[id]) return;
 
-        voice.level.gain.rampTo(audible ? s.volume / 100 : 0, 0.025);
+    const s = settings[id];
+    const voice = voices[id];
+    const inst = getInstrument(id);
+    const audible = isAudible(id);
 
-        const toneHz = 220 + Math.pow(s.tone / 100, 2.15) * 18500;
-        voice.filter.frequency.rampTo(toneHz, 0.06);
 
-        voice.reverbSend.gain.rampTo(
-            audible ? (s.reverb / 100) * 0.42 : 0,
-            0.04
-        );
+    voice.level.gain.rampTo(
+        audible ? Number(s.volume) / 100 : 0,
+        0.03
+    );
 
-        voice.delaySend.gain.rampTo(
-            audible ? (s.delay / 100) * 0.34 : 0,
-            0.04
-        );
 
-        try {
-            if (voice.kind === 'pluck') {
-                voice.synth.set({
-                    dampening: Math.max(
-                        500,
-                        Math.min(8000, 1200 + (2.5 - Number(s.release)) * 700)
-                    )
-                });
-            } else {
+    const tone = Number(s.tone) / 100;
+    const toneHz = 200 + Math.pow(tone, 2) * 17800;
+    voice.filter.frequency.rampTo(toneHz, 0.06);
+
+
+    voice.reverbSend.gain.rampTo(
+        audible ? Number(s.reverb) / 100 * 0.42 : 0,
+        0.04
+    );
+
+    voice.delaySend.gain.rampTo(
+        audible ? Number(s.delay) / 100 * 0.34 : 0,
+        0.04
+    );
+
+   
+    const attack = Math.max(0.001, Number(s.attack));
+    const release = Math.max(0.02, Number(s.release));
+
+    try {
+        switch (voice.kind) {
+            case 'pluck':
+              
+                voice.synth.dampening = Math.max(
+                    500,
+                    Math.min(8000, 800 + release * 2500)
+                );
+                break;
+
+            case 'membrane':
                 voice.synth.set({
                     envelope: {
-                        attack: Math.max(0.001, Number(s.attack)),
-                        release: Math.max(0.02, Number(s.release))
+                        attack,
+                        decay: Math.max(0.05, release),
+                        sustain: 0,
+                        release
                     }
                 });
-            }
-        } catch (error) {
-            
-            console.warn(`Setting not supported for ${id}:`, error);
+                break;
+
+            case 'noise':
+                voice.synth.set({
+                    envelope: {
+                        attack,
+                        decay: 0.05,
+                        sustain: 0,
+                        release
+                    }
+                });
+                break;
+
+            default:
+                voice.synth.set({
+                    envelope: {
+                        attack,
+                        release
+                    }
+                });
         }
+    } catch (error) {
+        console.warn(`Settings error (${id}):`, error);
     }
+}
+
+
 
     function applyAllSettings() {
         instruments.forEach(inst => applySettings(inst.id));
