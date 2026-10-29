@@ -1590,6 +1590,12 @@ input[type="range"]::-moz-range-thumb {
     }
 }
 
-#soundGrid>.sound-card .sound-name {
+
+#soundGrid .sound-name {
+    display: none !important;
+}
+#soundGrid .sound-status,
+#soundGrid .sound-state,
+#soundGrid .sound-indicator {
     display: none !important;
 }
